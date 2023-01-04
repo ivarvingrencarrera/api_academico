@@ -1,0 +1,18 @@
+python -m venv .\venv
+.\venv\Scripts\Activate.ps1
+python.exe -m pip install --upgrade pip
+pip install django
+pip install djangorestframework
+pip install markdown
+pip install python-dotenv
+django-admin startproject setup .
+code runtime.txt
+code Procfile
+code .gitignore
+code .env
+python manage.py startapp sal_ead
+python manage.py startapp sga_ead
+python manage.py startapp sga_presencial
+code .\sga_presencial\serializers.py
+code .\sga_ead\serializers.py
+code .\sal_ead\serializers.py
