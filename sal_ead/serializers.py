@@ -9,19 +9,14 @@ class AccountSerializer(serializers.ModelSerializer):
     origin = serializers.SerializerMethodField()
     course_type = serializers.SerializerMethodField()
     offer_id = serializers.SerializerMethodField()
-    first_level_name = serializers.SerializerMethodField()
-    first_level_sis_account_id = serializers.SerializerMethodField()
-    second_level_name = serializers.SerializerMethodField()
-    second_level_sis_account_id = serializers.SerializerMethodField()
-    third_level_name = serializers.SerializerMethodField()
-    third_level_sis_account_id = serializers.SerializerMethodField()
-    fourth_level_sis_parent_account_id = serializers.SerializerMethodField()
+    first_level_account = serializers.SerializerMethodField()
+    second_level_account = serializers.SerializerMethodField()
+    third_level_account = serializers.SerializerMethodField()
 
     class Meta:
         model = Oferta
-        fields = ['origin', 'course_type', 'offer_id', 'first_level_name', 'first_level_sis_account_id', 'second_level_name',
-                  'second_level_sis_account_id', 'third_level_name', 'third_level_sis_account_id',
-                  'fourth_level_sis_parent_account_id']
+        fields = ['origin', 'course_type', 'offer_id', 'first_level_account', 'second_level_account',
+                  'third_level_account']
 
     def get_origin(self, obj) -> str:
         return 'SAL_EAD'
@@ -40,6 +35,15 @@ class AccountSerializer(serializers.ModelSerializer):
             account_name = f"{obj.nom_curso} - Oferta {str(obj.num_oferta).zfill(2)}"
         return account_name
 
+    def get_first_level_account(self, obj) -> dict:
+        name = self.get_first_level_name(obj)
+        id = self.get_first_level_sis_account_id(obj)
+        return {
+            'name': name,
+            'sis_account_id': id,
+            'sis_parent_account_id': self.get_second_level_sis_account_id(obj)
+        }
+
     def get_first_level_sis_account_id(self, obj) -> str:
         if obj.cod_tipo_curso == 8:
             account_sis_account_id = f"SALEAD_{obj.cod_tipo_curso}_{obj.cod_curso}_{obj.num_oferta}"
@@ -56,6 +60,15 @@ class AccountSerializer(serializers.ModelSerializer):
             account_name = obj.nom_curso
         return account_name
 
+    def get_second_level_account(self, obj) -> dict:
+        name = self.get_second_level_name(obj)
+        id = self.get_second_level_sis_account_id(obj)
+        return {
+            'name': name,
+            'sis_account_id': id,
+            'sis_parent_account_id': self.get_third_level_sis_account_id(obj)
+        }
+
     def get_second_level_sis_account_id(self, obj) -> str:
         if obj.cod_tipo_curso == 8:
             account_sis_account_id = f"SALEAD_{obj.cod_tipo_curso}_{obj.cod_curso}"
@@ -69,6 +82,15 @@ class AccountSerializer(serializers.ModelSerializer):
         else:
             name = obj.nome_instituto
         return name
+
+    def get_third_level_account(self, obj) -> dict:
+        name = self.get_third_level_name(obj)
+        id = self.get_third_level_sis_account_id(obj)
+        return {
+            'name': name,
+            'sis_account_id': id,
+            'sis_parent_account_id': self.get_fourth_level_sis_parent_account_id(obj)
+        }
 
     def get_third_level_sis_account_id(self, obj) -> str:
         if obj.cod_tipo_curso == 8:

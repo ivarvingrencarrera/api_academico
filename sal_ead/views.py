@@ -7,5 +7,5 @@ from django.db.models import Q
 
 class AccountUnsyncViewSet(viewsets.ModelViewSet):
 
-    queryset = Oferta.objects.filter()
+    queryset = Oferta.objects.filter(origem='EAD', dat_inicio__gt='2023-01-01 00:00:00', ind_excluido=0, dat_cancelamento=None)
     serializer_class = AccountSerializer
