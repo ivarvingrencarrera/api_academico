@@ -5,7 +5,7 @@ from sal_ead.views import AccountUnsyncViewSet
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register('accounts', AccountUnsyncViewSet)
+router.register('sal_ead/accounts/unsync', AccountUnsyncViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls))
